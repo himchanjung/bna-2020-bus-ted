@@ -5,3 +5,6 @@
 * Recent News about SFMTA Decisions: [link](https://docs.google.com/spreadsheets/d/1ofaZfkcZZcMpsVytV75TQCHOBslIzWTPb7cI9CUeFnE/edit#gid=0)
 
 ### Database Design
+
+### UI Design
+* FIGMA mockup: [link](https://www.figma.com/file/wsasyG3cTQNw5iCS47qkZd/bus-ted?node-id=0%3A1)
