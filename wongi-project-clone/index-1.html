@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="">
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <link rel="stylesheet" href="scripts/uniform-control/lib/uniform/themes/default/css/uniform.default.css">
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="scripts/uniform-control/src/UniformControl.js"></script>
+    <script src="scripts/minimap/src/Control.MiniMap.js"></script>
+</head>
+
+<body>
+    <div id="mapid"></div>
+    <script type="text/javascript" src="data/test-muni-3.js"></script>
+    <script type="text/javascript" src="data/bay-area.js"></script>
+    <script type="text/javascript" src="zipByIncome_copy.js"></script>
+    <script type="text/javascript">
+
+        // Load map
+        var map = L.map('mapid').setView([37.7749, -122.4394], 13);
+
+        // Load line and shapefile data
+        var muniLines = data;
+        var zipcodesIncome = zipData;
+
+        // var bayAreaShapefile = bayArea;
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: '[ACCESS TOKEN]'
+        }).addTo(map);
+
+        /**
+        var zipcodesIncome = $.ajax({
+            url: "zipByIncome.json",
+            dataType: "json",
+            success: console.log("Data successfully loaded!"),
+            error: function (xhr) {
+                alert(xhr.statusText)
+            }
+        })
+
+        console.log(zipcodesIncome)
+        **/
+
+        // create minimap
+        /**
+        var smallMap = new L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            minzoom: 0,
+            maxZoom: 13,
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiaGltY2hhbmp1bmciLCJhIjoiY2s5a2RiM2UyMXR3ejNlcXQydGJ3cGJjZCJ9.NSkQXnTysckX1uKUAsap3A'
+        });
+
+        var miniMap = new L.Control.Minimap(smallMap, { toggleDisplay: true }).addTo(map);
+        **/
+
+        // Data template
+        /**
+        var muniLines = [{
+            "@_id": 'SAMPLE',
+            "route_name": 'SAMPLE',
+            "direction": 'SAMPLE',
+            "type": "LineString",
+            "open": 1,
+            "coordinates": [[-122.49313377324516, 37.77970306078667], [-122.49344577297542, 37.78162706065165], [-122.49237477312943, 37.78167606056935], [-122.49246377297288, 37.78291106047458], [-122.49250977289282, 37.7835420604262], [-122.49143577304721, 37.78359106034367], [-122.49036377320137, 37.7836400602613], [-122.48928877335604, 37.78368806017883], [-122.48821677351017, 37.78373706009645], [-122.4871497736637, 37.78378506001452], [-122.4860877738165, 37.78383305993296], [-122.48500977397154, 37.78388205985016], [-122.48393577412612, 37.783930059767705], [-122.48286977427941, 37.78397905968578], [-122.48179077443463, 37.78402805960294], [-122.48072477458798, 37.78407605952109], [-122.47964977474267, 37.78412505943848], [-122.47857777489682, 37.78417405935612], [-122.47750877505071, 37.78422205927403], [-122.47643577520506, 37.78427105919156], [-122.47536977535852, 37.784319059109784], [-122.4742447755204, 37.78437005902336], [-122.47311877568245, 37.78442105893688], [-122.47258477575885, 37.78444905889552], [-122.47205077583533, 37.78447605885433], [-122.47098077598943, 37.784524058772185], [-122.46990677614407, 37.78457205868974], [-122.46883877629776, 37.784621058607655], [-122.46776377645266, 37.78466805852524], [-122.46669377660685, 37.78471505844317], [-122.46563177674938, 37.78485205835429], [-122.46457177689109, 37.78499405826522], [-122.46350277703485, 37.78513005817591], [-122.46244077717746, 37.78526605808713], [-122.46136777732177, 37.78540305799744], [-122.46030777746427, 37.785538057908894], [-122.45917777761628, 37.78568105781455], [-122.4580607777664, 37.78582405772115], [-122.45696277791414, 37.78596305762953], [-122.45668477795137, 37.78600005760613], [-122.45586477806165, 37.7861040575377], [-122.4550487781714, 37.786208057469445], [-122.4547737782084, 37.786243057446505], [-122.45340577839241, 37.78641705733225], [-122.45328677840891, 37.78642805732262], [-122.45175777861499, 37.78661905719522], [-122.45022477882085, 37.78681705706686], [-122.45011777883448, 37.786837057057404], [-122.44846777905624, 37.78704905691942], [-122.44679177928182, 37.787261056779485], [-122.44540177946887, 37.78743805666334], [-122.44375277969078, 37.78764705652566], [-122.44210877991215, 37.787855056388445], [-122.4404397801368, 37.78806705624901], [-122.43877278036125, 37.78827805610981], [-122.43712878058253, 37.78848705597251], [-122.43548478080373, 37.788697055835065], [-122.43558078073434, 37.789171055803116], [-122.43567278066746, 37.78962905577216], [-122.43402678088918, 37.789837055634784], [-122.43359378094759, 37.78989105559867], [-122.43238378111057, 37.79004405549766], [-122.43073578133261, 37.790252055360085], [-122.4290917815542, 37.790459055222904], [-122.42744678177583, 37.790667055085535], [-122.42580178199759, 37.79087405494831], [-122.4259797818685, 37.79175705488869], [-122.42433978208939, 37.791965054751685], [-122.42269378231109, 37.79217405461415], [-122.4210517825322, 37.79238305447699], [-122.41940078275455, 37.792593054338994], [-122.41857578286566, 37.79269805427008], [-122.41775878297555, 37.79280305420168], [-122.4161127831972, 37.793013054064126], [-122.41446978341838, 37.79322305392672], [-122.41282878363941, 37.79343205378956], [-122.41210878373637, 37.79352405372935], [-122.41118578386063, 37.793642053652206], [-122.41036478397115, 37.79374705358351], [-122.40993478402916, 37.79380105354768], [-122.40989978403388, 37.79380605354468], [-122.40954078408218, 37.79385205351465], [-122.40919078412936, 37.79389605348545], [-122.40871978419283, 37.7939560534461], [-122.40790278430289, 37.794060053377784], [-122.40729378438502, 37.79413705332697], [-122.40682078444864, 37.794198053287325], [-122.40630478451823, 37.79426305324425], [-122.40566278460471, 37.7943450531906], [-122.40479578472181, 37.794453053118346], [-122.40313878494483, 37.79466605297965], [-122.40237378504702, 37.79477105291511], [-122.40148678517177, 37.794839052844665], [-122.40137678518705, 37.79484905283579], [-122.40045878531144, 37.794960052759535], [-122.40032878532477, 37.7950130527457], [-122.39914878548379, 37.79516305264706], [-122.39797378564211, 37.79531305254884], [-122.39708078576298, 37.79542205247457]]
+        }, {
+            '@_id': 'row-uzx5_esm6-de4b',
+            'route_name': 'PM',
+            'direction': 'I',
+            'type': 'LineString',
+            "open": 0,
+            'coordinates': [[-122.41523678189432, 37.805359052984315], [-122.4149997820638, 37.80420505306193], [-122.41487578215937, 37.80354205310734], [-122.41371778242527, 37.80274305308841], [-122.41290778261141, 37.80218305307524], [-122.41284778265411, 37.80189305309471], [-122.41275378272188, 37.80143005312597], [-122.4126587827901, 37.80096505315727], [-122.41252878288408, 37.80032305320056], [-122.4124707829266, 37.80003205322025], [-122.41241678296578, 37.799764053238384], [-122.41240778297245, 37.79971805324148], [-122.41228278306356, 37.799095053283644], [-122.41209478319958, 37.79816505334643], [-122.41188778335052, 37.797132053416284], [-122.41171778347366, 37.79629005347312], [-122.41162978353796, 37.79585005350294], [-122.41154078360258, 37.7954080535328], [-122.4113637837314, 37.79452605359244], [-122.41053678384284, 37.794631053523354], [-122.41007278390533, 37.794690053484565], [-122.40972078395264, 37.79473605345505], [-122.40954078408218, 37.79385205351465], [-122.40953578409174, 37.79377605352056], [-122.40936078421146, 37.792970053574116], [-122.40917078434752, 37.79204205363663], [-122.40897578448734, 37.79108905370079], [-122.40891878452797, 37.790812053719435], [-122.40878578462363, 37.790159053763475], [-122.40872278466857, 37.789853053784036], [-122.40859478476061, 37.78922505382639], [-122.40840078489775, 37.78829305388897], [-122.40822578503224, 37.7873590539531], [-122.4080357851709, 37.786409054017405], [-122.4078517853049, 37.7854910540796], [-122.40769778541988, 37.78469805413361], [-122.40763478546307, 37.78440705415295]]
+        }
+        ];
+        **/
+
+        // Set line style
+        var openStyle = {
+            "color": "#0055ff",
+            "weight": 2,
+            "opacity": 1
+        };
+
+        var closedStyle = {
+            "color": "#910c1b",
+            "weight": 0.5,
+            "opacity": 0.8
+        };
+
+        var shadeStyle = {
+            "color": "#2e2e2e",
+            "weight": 0.5,
+            "opacity": 0.3
+        };
+
+        // filter lines by "open" parameter
+        openLines = L.geoJSON(muniLines, {
+            style: openStyle,
+            filter: function (feature, layer) {
+                return feature.open === 1
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup("<b>Name of Line: </b>" + feature.route_name);
+            }
+        });
+
+        closedLines = L.geoJSON(muniLines, {
+            style: closedStyle,
+            filter: function (feature, layer) {
+                return feature.open === 0;
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup("<b>Name of Line: </b>" + feature.route_name);
+            }
+        });
+
+        /**
+        bayAreaSHP = L.geoJSON(zipcodesIncome.responseJSON, {
+            style: shapefileStyle
+        }).addTo(map);  
+        **/
+
+        function getColor(d) {
+            return d > 100000 ? '#EBEBEB' :
+                d > 85000 ? '#C5C5C5' :
+                    d > 70000 ? '#B3B3B3' :
+                        d > 55000 ? '#8E8E8E' :
+                            d > 40000 ? '#6C6C6C' :
+                                d > 25000 ? '#4B4B4B' :
+                                    d > 10000 ? '#2D2D2D' :
+                                        '#1F1F1F';
+        }
+
+        // '#FFEDA0' '#FED976' '#FEB24C' '#FD8D3C' '#FC4E2A' '#E31A1C' '#BD0026' '#800026'
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.mpci),
+                weight: 2,
+                opacity: 0.7,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.6
+            };
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+            info.update(layer.feature.properties);
+        }
+
+        function resetHighlight(e) {
+            info.update();
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature
+            });
+        }
+
+        var bayAreaSHP = L.geoJSON(zipcodesIncome, {
+            style: style,
+            onEachFeature: onEachFeature
+        }).addTo(map);
+
+        var overlays = {
+            "MUNI Lines Open after Mar. 30": openLines,
+            "MUNI Lines Closed after Mar. 30": closedLines,
+            "Zipcodes": bayAreaSHP
+        };
+
+        // Set up toggle button
+        /**
+        var toggle = false;
+
+        var stateChangingButton = L.easyButton({
+            states: [{
+                stateName: 'before-shutdown',
+                icon: '<span class="star">&starf;</span>',
+                title: 'Before SFMTA Shutdown',
+                onClick: function (btn, map) {
+                    if (!toggle) {
+                        map.removeLayer(closedMuni);
+                    } else {
+                        map.addLayer(closedMuni);
+                    }
+                    toggle = !toggle;
+                }
+            }]
+        });
+
+        stateChangingButton.addTo(map);
+        **/
+
+        allLineShades = L.geoJSON(muniLines, {
+            style: shadeStyle,
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup("<b>Name of Line: </b>" + feature.route_name);
+            }
+        }).addTo(map);
+
+        var control = L.control.UniForm(null, overlays, {
+            collapsed: false,
+            position: 'topright'
+        });
+
+        control.addTo(map);
+        control.renderUniformControl();
+
+        // add info control
+        var info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props) {
+            this._div.innerHTML = '<h4>Median Per Capita Income</h4>' + (props ?
+                '<b>$' + props.mpci + '</b><br /><br /><h4>Margin of Error</h4>$' + props.moe
+                : 'Hover over a state');
+        };
+
+        info.addTo(map);
+
+
+        // add legend
+        var legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [10000, 25000, 40000, 55000, 70000, 85000, 100000],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                    '$' + grades[i] + (grades[i + 1] ? '&ndash;$' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+    </script>
+</body>
+
+</html>
